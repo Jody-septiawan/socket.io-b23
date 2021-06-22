@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        #messages > div:nth-child(odd) { 
+            background: #efefef;
+            padding: 5px 10px;
+        }
+        #messages > div:nth-child(even) { 
+            padding: 5px 10px;
+        }
+
+    </style>
+</head>
+  <body>
+
+    <div id="count-user" class="px-2">
+
+    </div>
+
+    <div id="messages">
+
+    </div>
+
+    <div class="fixed-bottom p-1">
+        <div class="input-group mb-2">
+            <input id="message" type="text" class="form-control" placeholder="Write here .." aria-label="Recipient's username" aria-describedby="button-addon2">
+            <button id="btn-message" class="btn btn-primary" type="button" id="button-addon2">Button</button>
+          </div>
+    </div>
+      
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let socket = io();
+
+        let messages = document.getElementById('messages');
+        let message = document.getElementById('message');
+        let btnMessage = document.getElementById('btn-message');
+        let countuser = document.getElementById('count-user');
+
+        btnMessage.addEventListener('click',()=>{
+            if(message.value){
+                let value = message.value
+                socket.emit('send message', value)
+                message.value = ''
+            }
+        })
+
+        socket.on('load message',(data)=>{
+            var item = document.createElement('div');
+            item.textContent = data;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        })
+
+        socket.on('count user connect',(data)=>{
+            countuser.textContent = "User connect : "+data
+        })
+
+    </script>
+    
+  </body>
+</html>
